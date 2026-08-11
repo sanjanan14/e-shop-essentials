@@ -19,6 +19,7 @@ export type Database = {
           id: string
           order_id: string
           product_id: string | null
+          product_image: string | null
           product_name: string
           quantity: number
           unit_price: number
@@ -27,6 +28,7 @@ export type Database = {
           id?: string
           order_id: string
           product_id?: string | null
+          product_image?: string | null
           product_name: string
           quantity: number
           unit_price: number
@@ -35,6 +37,7 @@ export type Database = {
           id?: string
           order_id?: string
           product_id?: string | null
+          product_image?: string | null
           product_name?: string
           quantity?: number
           unit_price?: number
@@ -61,6 +64,8 @@ export type Database = {
           created_at: string
           id: string
           shipping_address: string
+          shipping_name: string
+          shipping_phone: string
           status: string
           total_amount: number
           updated_at: string
@@ -70,6 +75,8 @@ export type Database = {
           created_at?: string
           id?: string
           shipping_address?: string
+          shipping_name?: string
+          shipping_phone?: string
           status?: string
           total_amount?: number
           updated_at?: string
@@ -79,6 +86,8 @@ export type Database = {
           created_at?: string
           id?: string
           shipping_address?: string
+          shipping_name?: string
+          shipping_phone?: string
           status?: string
           total_amount?: number
           updated_at?: string
@@ -128,16 +137,19 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          email: string | null
           full_name: string | null
           id: string
         }
         Insert: {
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id: string
         }
         Update: {
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id?: string
         }
@@ -172,6 +184,15 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      place_order: {
+        Args: {
+          _items: Json
+          _shipping_address: string
+          _shipping_name: string
+          _shipping_phone: string
+        }
+        Returns: string
       }
     }
     Enums: {
