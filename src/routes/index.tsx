@@ -46,14 +46,18 @@ function Index() {
   });
 
   const categories = useMemo(
-    () => ["All", ...Array.from(new Set((products ?? []).map((p) => p.category)))],
+    () => ["All", ...Array.from(new Set((products ?? []).map((p) => p.category))).sort()],
     [products],
   );
 
+  const term = search.trim().toLowerCase();
   const visible = (products ?? []).filter(
     (p) =>
       (category === "All" || p.category === category) &&
-      p.name.toLowerCase().includes(search.trim().toLowerCase()),
+      (term === "" ||
+        p.name.toLowerCase().includes(term) ||
+        p.description.toLowerCase().includes(term) ||
+        p.category.toLowerCase().includes(term)),
   );
 
   return (
@@ -121,6 +125,9 @@ function Index() {
                     </Link>
                   </h2>
                   <p className="line-clamp-2 text-sm text-muted-foreground">{product.description}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+                  </p>
                   <div className="flex items-center justify-between pt-2">
                     <span className="text-lg font-semibold">{currency(Number(product.price))}</span>
                     <Button

@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { statusTone } from "./orders";
+import { statusTone, statusLabel, ORDER_STATUSES } from "./orders";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -31,14 +31,15 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-const STATUSES = ["pending", "paid", "shipped", "delivered", "cancelled"];
+const STATUSES = [...ORDER_STATUSES];
+const CATEGORIES = ["Audio", "Desk", "Home", "Apparel", "Travel", "Wearables", "Photo"];
 
 const emptyForm = {
   name: "",
   description: "",
   price: "",
   image_url: "",
-  category: "",
+  category: "Audio",
   stock: "",
 };
 
@@ -69,16 +70,20 @@ function AdminPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id,total_amount,status,shipping_address,created_at,order_items(id,product_name,quantity)")
+        .select(
+          "id,total_amount,status,shipping_name,shipping_phone,shipping_address,created_at,order_items(id,product_name,quantity,unit_price)",
+        )
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as unknown as {
         id: string;
         total_amount: number;
         status: string;
+        shipping_name: string;
+        shipping_phone: string;
         shipping_address: string;
         created_at: string;
-        order_items: { id: string; product_name: string; quantity: number }[];
+        order_items: { id: string; product_name: string; quantity: number; unit_price: number }[];
       }[];
     },
   });
@@ -177,7 +182,18 @@ function AdminPage() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="p-cat">Category</Label>
-              <Input id="p-cat" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} maxLength={60} />
+              <Select value={form.category} onValueChange={(value) => setForm({ ...form, category: value })}>
+                <SelectTrigger id="p-cat">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="p-img">Image URL</Label>
@@ -243,26 +259,35 @@ function AdminPage() {
                   <p className="text-sm text-muted-foreground">{new Date(order.created_at).toLocaleString()}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge className={statusTone(order.status)}>{order.status}</Badge>
+                  <Badge className={statusTone(order.status)}>{statusLabel(order.status)}</Badge>
                   <span className="font-semibold">{currency(Number(order.total_amount))}</span>
                   <Select value={order.status} onValueChange={(value) => void updateStatus(order.id, value)}>
-                    <SelectTrigger className="w-36">
+                    <SelectTrigger className="w-40">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {STATUSES.map((status) => (
                         <SelectItem key={status} value={status}>
-                          {status}
+                          {statusLabel(status)}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-              <p className="mt-3 text-sm text-muted-foreground">
-                {order.order_items.map((item) => `${item.product_name} × ${item.quantity}`).join(", ")}
+              <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+                {order.order_items.map((item) => (
+                  <li key={item.id} className="flex justify-between gap-3">
+                    <span className="truncate">
+                      {item.product_name} × {item.quantity}
+                    </span>
+                    <span>{currency(Number(item.unit_price) * item.quantity)}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Ships to: {order.shipping_name || "—"} · {order.shipping_phone || "—"} · {order.shipping_address}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">Ships to: {order.shipping_address}</p>
             </div>
           ))}
           {orders && orders.length === 0 ? (

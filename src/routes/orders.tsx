@@ -22,15 +22,39 @@ type OrderRow = {
   id: string;
   total_amount: number;
   status: string;
+  shipping_name: string;
+  shipping_phone: string;
   shipping_address: string;
   created_at: string;
-  order_items: { id: string; product_name: string; quantity: number; unit_price: number }[];
+  order_items: {
+    id: string;
+    product_name: string;
+    product_image: string | null;
+    quantity: number;
+    unit_price: number;
+  }[];
 };
+
+export const ORDER_STATUSES = [
+  "ordered",
+  "packed",
+  "shipped",
+  "out_for_delivery",
+  "delivered",
+  "cancelled",
+] as const;
+
+export function statusLabel(status: string) {
+  return status
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 
 export function statusTone(status: string) {
   if (status === "delivered") return "bg-success text-success-foreground";
   if (status === "cancelled") return "bg-destructive text-destructive-foreground";
-  if (status === "shipped") return "bg-accent text-accent-foreground";
+  if (status === "shipped" || status === "out_for_delivery") return "bg-accent text-accent-foreground";
   return "bg-secondary text-secondary-foreground";
 }
 
@@ -48,7 +72,9 @@ function OrdersPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id,total_amount,status,shipping_address,created_at,order_items(id,product_name,quantity,unit_price)")
+        .select(
+          "id,total_amount,status,shipping_name,shipping_phone,shipping_address,created_at,order_items(id,product_name,product_image,quantity,unit_price)",
+        )
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as unknown as OrderRow[];
@@ -79,21 +105,38 @@ function OrdersPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge className={statusTone(order.status)}>{order.status}</Badge>
+                  <Badge className={statusTone(order.status)}>{statusLabel(order.status)}</Badge>
                   <span className="font-semibold">{currency(Number(order.total_amount))}</span>
                 </div>
               </div>
-              <ul className="mt-4 space-y-1 border-t border-border pt-4 text-sm text-muted-foreground">
+              <ul className="mt-4 space-y-3 border-t border-border pt-4 text-sm">
                 {order.order_items.map((item) => (
-                  <li key={item.id} className="flex justify-between">
-                    <span>
-                      {item.product_name} × {item.quantity}
+                  <li key={item.id} className="flex items-center gap-3">
+                    <div className="size-12 shrink-0 overflow-hidden rounded-lg bg-muted">
+                      {item.product_image ? (
+                        <img
+                          src={item.product_image}
+                          alt={item.product_name}
+                          loading="lazy"
+                          className="size-full object-cover"
+                        />
+                      ) : null}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium">{item.product_name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {currency(Number(item.unit_price))} × {item.quantity}
+                      </p>
+                    </div>
+                    <span className="text-muted-foreground">
+                      {currency(Number(item.unit_price) * item.quantity)}
                     </span>
-                    <span>{currency(Number(item.unit_price) * item.quantity)}</span>
                   </li>
                 ))}
               </ul>
-              <p className="mt-3 text-xs text-muted-foreground">Ships to: {order.shipping_address}</p>
+              <p className="mt-4 text-xs text-muted-foreground">
+                Ships to: {order.shipping_name} · {order.shipping_phone} · {order.shipping_address}
+              </p>
             </li>
           ))}
         </ul>
