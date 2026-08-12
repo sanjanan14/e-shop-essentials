@@ -1,14 +1,32 @@
-# Welcome to your Lovable project
+# E-Shop Essentials
+
+E-Commerce Web Application
+
+Build a basic online store with product management and order tracking.
+
+Key Features:
+
+Product catalog, add to cart, and checkout functionality
+
+User login and role-based access (Admin/User)
+
+Backend APIs for product & order management
+
+Database integration with MySQL, PostgreSQL, or MongoDB
+
+Expected Outcome:
+
+Gain hands-on experience in building a complex full-stack application with real-world features. build this project and give
 
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/c8579fca-d5b5-4dd8-9a4b-0e8060355fdf).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +38,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
