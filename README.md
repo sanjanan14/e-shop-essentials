@@ -1,40 +1,110 @@
-# E-Shop Essentials
+# E-Shop Essentials 🛒
 
-E-Commerce Web Application
+A full-stack e-commerce web application that provides a complete online shopping experience with product browsing, category filtering, search, shopping cart, checkout, user authentication, order tracking, and an admin dashboard for product and order management.
 
-Build a basic online store with product management and order tracking.
+## 📌 Project Overview
 
-Key Features:
+E-Shop Essentials is designed as a real-world e-commerce application where users can browse products across multiple categories, add products to their cart, place orders, and track their order status.
 
-Product catalog, add to cart, and checkout functionality
+The application also includes an admin dashboard that allows authorized administrators to manage products, inventory, and customer orders.
 
-User login and role-based access (Admin/User)
+All important application data is stored using a persistent backend database.
 
-Backend APIs for product & order management
+## ✨ Features
 
-Database integration with MySQL, PostgreSQL, or MongoDB
+### 👤 User Features
 
-Expected Outcome:
+- User registration and authentication
+- User login and logout
+- Browse products
+- Product category filtering
+- Search products
+- View product details
+- Add products to cart
+- Update cart quantities
+- Remove products from cart
+- Checkout with shipping information
+- Place orders
+- View previous orders
+- Track order status
 
-Gain hands-on experience in building a complex full-stack application with real-world features. build this project and give
+### 🛍️ Product Categories
 
-This project was built with [Lovable](https://lovable.dev).
+The application contains multiple products under the following categories:
 
-## Build with Lovable
+- Audio
+- Desk
+- Home
+- Apparel
+- Travel
+- Wearables
+- Photo
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/c8579fca-d5b5-4dd8-9a4b-0e8060355fdf).
+The **All** category displays all available products.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+### 🔎 Search & Filtering
 
-## Development
+Users can:
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+- Filter products by category
+- Search products by name
+- Combine search and category filtering
+- View multiple products within each category
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+### 🛒 Shopping Cart
+
+The shopping cart supports:
+
+- Adding products
+- Increasing/decreasing quantity
+- Removing products
+- Automatic total calculation
+- Stock validation
+- Checkout
+
+### 💳 Checkout
+
+The checkout system collects:
+
+- Customer name
+- Phone number
+- Shipping address
+
+After placing an order:
+
+- The order is saved to the database
+- Order items are created
+- Product stock is reduced
+- The cart is cleared
+- The order becomes available in the user's Orders page
+
+> Note: This project uses demo checkout functionality and does not process real payments.
+
+## 📦 Order Tracking
+
+Users can view their orders with:
+
+- Order ID
+- Product name
+- Product image
+- Quantity
+- Product price
+- Total amount
+- Order date
+- Shipping information
+- Current order status
+
+### Order Status
+
+Orders can move through the following stages:
+
+```text
+Ordered
+   ↓
+Packed
+   ↓
+Shipped
+   ↓
+Out for Delivery
+   ↓
+Delivered
